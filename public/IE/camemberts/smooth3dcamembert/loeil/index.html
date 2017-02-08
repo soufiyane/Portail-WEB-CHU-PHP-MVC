@@ -1,0 +1,110 @@
+<html>
+<!-- 
+ - Date de création : 29/09/2008
+ - Nom : index.html
+ - Application : Smooth 3D Camembert, version 4.1, démo "ajax" à la manière de SVG3DCamembert
+ - Auteur : opossum_farceur
+ - Object : Camembert, 3D, Antialiasing, Bresenham, Statistiques
+ - Adresse : http://michel.vanthodiep.free.fr/smooth3dcamembert/loeil/index.html
+ - Testé avec : IE7, FF3
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta Http-Equiv="Cache-Control" Content="no-cache">
+<meta Http-Equiv="Pragma" Content="no-cache">
+<meta Http-Equiv="Expires" Content="0">
+<title></title>
+
+<style type="text/css">
+	body {background-color:#EEEEEE;}
+</style>
+<script type="text/javascript">
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function $(id)								// façon "prototype"
+{
+	return document.getElementById(id);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function arr2str()						// convertit le tableau de données en une chaîne de caractères
+{												// Séparateurs : ",," et ","
+	for (var i=0,n=arr.length,temp=[];i<n;i++) temp[i]=arr[i].join(',');
+	return temp.join(',,');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function handle(response)
+{
+	if (response.charAt(0)=='@') {	// caractère signalant une erreur
+		alert(response.substr(1));
+		return;
+	}
+	
+	// les champs (d'abord le nom du fichier, ensuite les différentes portions) sont séparés par '\n'
+	var t=response.split('\n'),j,n,s='';
+	// les coordonnées des portions sont déjà séparées par ',' : il n'y a donc pas lieu à remanier t[j] !
+	for (j=1,n=t.length-1;j<n;j++)
+		s+='<area shape="poly" coords="'+t[j]+'" href="javascript:go(\''+(j-1)+'\');"/>';
+	
+	document.getElementsByName('mymap').item(0).innerHTML=s;
+	$('myimg').src=t[0];
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function go(index)
+{
+	arr[index][3]= (arr[index][3])? 0 : 1;	
+	request();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function request()				// envoie la requête et récupère la réponse
+{	
+	var 
+		xhr= (window.ActiveXObject)? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest(),
+		url=server+'?class=aabasic&title='+title+'&str='+arr2str()+'&size='+size+'&ajax=1&bg1='+bgcolor;
+
+	xhr.onreadystatechange=function() {
+		if (xhr.readyState==4 && xhr.status==200) handle(xhr.responseText);
+	}
+
+	xhr.open('get',url,true);
+	xhr.send(null);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+</script>
+</head>
+
+<body><center><br/><br/>
+
+<img id="myimg" src="" usemap="#mymap" border="0"/>
+<map name="mymap"></map>						<!-- "id" supporté par IE mais pas par FF -->
+
+<script type="text/javascript">
+var 
+	server='interactivecamembert.php',
+	title='Le camembert : sa composition',	// les accents sont supportés
+	size=3,											// 1,2,3
+	bgcolor=0xEEEEEE,								// couleur du fond
+	arr=[
+	//	 donnée	couleur		légende					xploded
+		[10,		0xFF9900,	'Du lait',				1],
+		[10,		0xFFCB03,	'Encore du lait...',	0],
+		[10,		0x99CC00,	'Toujours du lait!',	0]
+	];
+
+// codage de la légende du tableau
+for (var i=0,n=arr.length;i<n;i++) arr[i][2]=encodeURIComponent(arr[i][2]);
+// on est prêt
+request();
+</script>
+
+</center></body></html>

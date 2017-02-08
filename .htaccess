@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule    ^index\.php$ - [L]
+    RewriteRule    ^$    public/    [L]
+    RewriteRule    ^$    application/views/IE/    [L]
+	RewriteRule    ^$    public/img/upload/photos/* [L]
+    RewriteRule    (.*) public/$1    [L]
+	RewriteRule ^(.*)$ /index.php?/$1 [L]
+ </IfModule>

@@ -1,0 +1,30 @@
+.suggestionsBox {
+		position: absolute;
+                top:0px;
+                left:0px;
+		width: 350px;
+		background-color: #fff;
+		border: 1px solid grey;
+                border-top:none;
+		color: #000;
+		height: 200px;
+		overflow-y: scroll;
+}
+
+.suggestionList {
+	margin: 0px;
+	padding: 0px;
+}
+
+.suggestionList li {
+	
+	margin: 0px 0px 3px 0px;
+	padding: 3px;
+	cursor: pointer;
+	list-style:none;
+}
+
+.suggestionList li:hover {
+	background-color: #778899;
+	color:#fff;
+}
